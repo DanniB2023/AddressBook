@@ -6,6 +6,27 @@
 <code>@System.Text.Json.JsonSerializer.Serialize(Model.Person)</code>
 @Model.Person!.FirstName
 @Model.Person!.LastName
+@Model.Person!.Archived
+@Model.Person!.Unarchived
+
+@if (!Model.Person!.Archived)
+{
+    <form method="post" asp-page-handler="Archive">
+        <button type="submit">Archive</button>
+
+    </form>
+
+}
+
+else
+{
+    <form method="post" asp-page-handler="Unarchive">
+        <button type="submit">Unarchive</button>
+    </form>
+
+}
+
+
 
 
 
@@ -78,6 +99,9 @@
     <input type="submit" value="Submit" />
 
 </form>
+
+
+
 
 
 

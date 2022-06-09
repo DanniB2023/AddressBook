@@ -3,7 +3,9 @@ using AddressBook.Infrastructure.Messages;
 
 namespace AddressBook.Entities.Person.Commands
 {
-    public class CommandHandlers : ICommandHandler<AddPersonCommand>, ICommandHandler<AddAddressToPersonCommand>, ICommandHandler<DeleteAddressFromPersonCommand>, ICommandHandler<AddPhoneNumberCommand>, ICommandHandler<DeletePhoneNumberFromPerson>, ICommandHandler<AddSocialMediaCommand>, ICommandHandler<DeleteSocialMediaFromPerson>
+    public class CommandHandlers : ICommandHandler<AddPersonCommand>, ICommandHandler<AddAddressToPersonCommand>, ICommandHandler<DeleteAddressFromPersonCommand>,
+        ICommandHandler<AddPhoneNumberCommand>, ICommandHandler<DeletePhoneNumberFromPerson>, ICommandHandler<AddSocialMediaCommand>,
+        ICommandHandler<DeleteSocialMediaFromPerson>, ICommandHandler<ArchivePersonCommand>, ICommandHandler<UnarchivedPersonCommand>
 
     {
         private readonly IPersonService _personService;
@@ -14,7 +16,8 @@ namespace AddressBook.Entities.Person.Commands
         }
         public Task Handle(AddPersonCommand command, CancellationToken cancellationToken = default)
         {
-            _personService.AddPerson(new Person(command.Id, command.FirstName, command.LastName, Array.Empty<Address>(), Array.Empty<PhoneNumber>(), Array.Empty<SocialMedia>()));
+            _personService.AddPerson(new Person(command.Id, command.FirstName, command.LastName, Array.Empty<Address>(), Array.Empty<PhoneNumber>(),
+                Array.Empty<SocialMedia>(), false, true));
             return Task.CompletedTask;
 
         }
@@ -88,6 +91,32 @@ namespace AddressBook.Entities.Person.Commands
                 .Where(socialMedia => !(socialMedia.Username == command.Username && socialMedia.Type == command.Type))
                 .ToArray()
             };
+            _personService.UpdatePerson(match);
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(ArchivePersonCommand command, CancellationToken cancellationToken = default)
+        {
+            var match = _personService.GetPersonById(command.Id);
+            if (match is null) throw new InvalidOperationException("Could Not Find Person");
+            match = match with
+            {
+                Archived = true
+
+            };
+            _personService.UpdatePerson(match);
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(UnarchivedPersonCommand command, CancellationToken cancellationToken = default)
+        {
+            var match = _personService.GetPersonById(command.Id);
+            if (match is null) throw new InvalidOperationException("Could Not Find Person");
+            match = match with
+            {
+                Archived = false
+            };
+
             _personService.UpdatePerson(match);
             return Task.CompletedTask;
         }

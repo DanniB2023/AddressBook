@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace AddressBook.Pages
 {
-    [Authorize]
+    //[Authorize]
     public class DetailsModel : PageModel
     {
         [BindProperty(SupportsGet = true)]
@@ -56,6 +56,18 @@ namespace AddressBook.Pages
         public async Task<IActionResult> OnPostDeleteSocialMedia(string type, string username, [FromServices] CommandHandler<DeleteSocialMediaFromPerson> command)
         {
             await command(new DeleteSocialMediaFromPerson(PersonId, type, username));
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostArchive([FromServices] CommandHandler<ArchivePersonCommand> command)
+        {
+            await command(new ArchivePersonCommand(PersonId));
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostUnarchive([FromServices] CommandHandler<UnarchivedPersonCommand> command)
+        {
+            await command(new UnarchivedPersonCommand(PersonId));
             return RedirectToPage();
         }
 

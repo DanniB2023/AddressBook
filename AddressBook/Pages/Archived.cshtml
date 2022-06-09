@@ -1,0 +1,10 @@
+﻿@page
+@model AddressBook.Pages.ArchivedModel
+@{
+    ViewData["Title"] = "Home page";
+}
+@foreach (var person in Model.Persons)
+{
+    <div><a asp-page="/Details" asp-route-PersonId="@person.Id">@person.FirstName @person.LastName</a> </div>
+}
+

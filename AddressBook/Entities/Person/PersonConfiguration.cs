@@ -17,6 +17,10 @@ public static class PersonConfiguration
         services.AddCommandHandler<DeletePhoneNumberFromPerson, CommandHandlers>();
         services.AddCommandHandler<AddSocialMediaCommand, CommandHandlers>();
         services.AddCommandHandler<DeleteSocialMediaFromPerson, CommandHandlers>();
+        services.AddQueryHandler<GetActivePersonsQuery, IEnumerable<Person>, QueryHandlers>();
+        services.AddQueryHandler<GetArchivedPersonQuery, IEnumerable<Person>, QueryHandlers>();
+        services.AddCommandHandler<ArchivePersonCommand, CommandHandlers>();
+        services.AddCommandHandler<UnarchivedPersonCommand, CommandHandlers>();
         return services;
     }
 }
